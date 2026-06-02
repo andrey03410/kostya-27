@@ -3,7 +3,10 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
-export default defineConfig({
+// На GitHub Pages сайт живёт в подпапке /kostya-27/, поэтому при сборке нужен base.
+// В dev-режиме оставляем корень '/'.
+export default defineConfig(({ command }) => ({
+  base: command === 'build' ? '/kostya-27/' : '/',
   plugins: [react(), tailwindcss()],
   test: {
     environment: 'jsdom',
@@ -12,4 +15,4 @@ export default defineConfig({
     css: true,
     include: ['src/**/*.{test,spec}.{js,jsx}'],
   },
-})
+}))

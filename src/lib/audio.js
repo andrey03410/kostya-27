@@ -1,15 +1,18 @@
 /**
- * Самодостаточный аудио-движок на Web Audio API — без внешних файлов.
- * - SFX: короткие звуки (монетка, разряд, поп, успех).
- * - Ambient: мягкий «пад»-фон, который включается тумблером музыки.
+ * Аудио-движок.
+ * - SFX: короткие звуки на Web Audio API (монетка, разряд, поп, успех) — без файлов.
+ * - Музыка: трек «fripSide — Only my Railgun» (опенинг Railgun) через Howler.js.
  *
  * Всё аккуратно защищено: если AudioContext недоступен (например, в jsdom-тестах),
  * функции просто ничего не делают и не бросают исключений.
  */
 
+import { Howl } from 'howler'
+import railgunTrack from '../assets/only-my-railgun.mp3'
+
 let ctx = null
 let masterGain = null
-let ambientNodes = null
+let music = null
 let ambientOn = false
 
 function hasAudio() {
@@ -87,60 +90,43 @@ export function playSfx(type) {
   }
 }
 
-/** Запускает мягкий ambient-пад (фоновая «музыка»). */
-export function startAmbient() {
-  const audio = ensureAudio()
-  if (!audio || ambientOn) return
-  ambientOn = true
-
-  const pad = audio.createGain()
-  pad.gain.value = 0
-  pad.gain.linearRampToValueAtTime(0.12, audio.currentTime + 2)
-  pad.connect(masterGain)
-
-  // Тёплый аккорд (отсылка к ламповому настроению Clannad)
-  const freqs = [220, 277.18, 329.63, 440] // A3, C#4, E4, A4
-  const oscillators = freqs.map((f, i) => {
-    const osc = audio.createOscillator()
-    osc.type = i % 2 === 0 ? 'sine' : 'triangle'
-    osc.frequency.value = f
-    // Лёгкое биение через расстройку
-    osc.detune.value = (i - 1.5) * 4
-    const g = audio.createGain()
-    g.gain.value = 0.25
-    osc.connect(g)
-    g.connect(pad)
-    osc.start()
-    return osc
-  })
-
-  // Медленное «дыхание» громкости
-  const lfo = audio.createOscillator()
-  const lfoGain = audio.createGain()
-  lfo.frequency.value = 0.08
-  lfoGain.gain.value = 0.04
-  lfo.connect(lfoGain)
-  lfoGain.connect(pad.gain)
-  lfo.start()
-
-  ambientNodes = { pad, oscillators, lfo }
+/** Лениво создаёт Howl с треком (без автозапуска). */
+function ensureMusic() {
+  if (music) return music
+  // В jsdom (тесты) Howler не сможет проиграть звук — оборачиваем на всякий случай.
+  try {
+    music = new Howl({
+      src: [railgunTrack],
+      loop: true,
+      volume: 0.5,
+      html5: true, // потоковое воспроизведение крупного mp3 без полной предзагрузки
+    })
+  } catch {
+    music = null
+  }
+  return music
 }
 
-/** Останавливает ambient-пад. */
+/** Запускает фоновую музыку — «Only my Railgun». */
+export function startAmbient() {
+  if (ambientOn) return
+  ambientOn = true
+  const m = ensureMusic()
+  if (!m) return
+  m.volume(0.5)
+  if (!m.playing()) m.play()
+}
+
+/** Останавливает фоновую музыку (с плавным затуханием). */
 export function stopAmbient() {
-  if (!ctx || !ambientOn || !ambientNodes) {
-    ambientOn = false
-    return
-  }
-  const { pad, oscillators, lfo } = ambientNodes
-  const now = ctx.currentTime
-  pad.gain.cancelScheduledValues(now)
-  pad.gain.setValueAtTime(pad.gain.value, now)
-  pad.gain.linearRampToValueAtTime(0.0001, now + 1)
-  oscillators.forEach((o) => o.stop(now + 1.1))
-  lfo.stop(now + 1.1)
-  ambientNodes = null
   ambientOn = false
+  const m = music
+  if (!m || !m.playing()) return
+  const from = m.volume()
+  m.fade(from, 0, 600)
+  m.once('fade', () => {
+    if (!ambientOn) m.pause()
+  })
 }
 
 export function isAmbientPlaying() {

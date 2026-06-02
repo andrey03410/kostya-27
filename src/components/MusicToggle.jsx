@@ -2,7 +2,8 @@ import { motion } from 'motion/react'
 import { useAppStore } from '../store/useAppStore'
 import { ensureAudio } from '../lib/audio'
 
-// Тумблер фоновой музыки (фикс. в углу). По умолчанию выкл — без автоплея.
+// Тумблер фоновой музыки (фикс. в углу). По умолчанию вкл; из-за политики
+// автоплея трек реально стартует после первого взаимодействия пользователя.
 export default function MusicToggle() {
   const musicOn = useAppStore((s) => s.musicOn)
   const toggleMusic = useAppStore((s) => s.toggleMusic)

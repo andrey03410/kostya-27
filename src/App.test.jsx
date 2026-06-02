@@ -13,6 +13,6 @@ describe('App', () => {
 
   it('показывает тумблер музыки', () => {
     render(<App />)
-    expect(screen.getByRole('button', { name: /включить музыку/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /музык/i })).toBeInTheDocument()
   })
 })

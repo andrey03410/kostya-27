@@ -4,13 +4,14 @@ import { persist } from 'zustand/middleware'
 /**
  * Глобальное состояние приложения.
  * - Рекорды мини-игр и факт «прошёл финал» сохраняются в localStorage.
- * - Музыка/звук — пользовательская настройка (по умолчанию выкл, без автоплея).
+ * - Музыка/звук — пользовательская настройка (по умолчанию вкл; реально
+ *   стартует после первого жеста пользователя из-за политики автоплея браузеров).
  */
 export const useAppStore = create(
   persist(
     (set, get) => ({
       // --- Звук ---
-      musicOn: false,
+      musicOn: true,
       toggleMusic: () => set((s) => ({ musicOn: !s.musicOn })),
       setMusic: (on) => set({ musicOn: on }),
 

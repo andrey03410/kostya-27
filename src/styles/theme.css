@@ -1,0 +1,56 @@
+/* theme.css — токены темы для Tailwind v4 (@theme).
+   Две палитры: Railgun (энергия/электричество) и Clannad (тепло/семья).
+   Значения в @theme автоматически становятся CSS-переменными в :root,
+   поэтому доступны и как utility-классы (bg-rg-blue), и из JS через
+   getComputedStyle (var(--color-rg-cyan)) — например, для canvas-эффектов. */
+
+@theme {
+  /* ---- Railgun: электрическая палитра ---- */
+  --color-rg-deep: #0a1a2f; /* тёмно-синий фон */
+  --color-rg-bg: #102845;
+  --color-rg-blue: #1e90ff; /* электрический синий */
+  --color-rg-cyan: #7df9ff; /* циан-разряд */
+  --color-rg-white: #f2faff; /* вспышка молнии */
+  --color-rg-accent: #c8612b; /* оранжевый — монетка / волосы Мисаки */
+  --color-rg-level5: #8a5cf6; /* акцент уровня 5 */
+
+  /* ---- Clannad: тёплая пастельная палитра ---- */
+  --color-cl-cream: #fff6e9;
+  --color-cl-sakura: #fbc8d4;
+  --color-cl-pink: #f7a8c4;
+  --color-cl-green: #bfe3c0;
+  --color-cl-sky: #bee3f8;
+  --color-cl-sunset: #ffd9a0;
+  --color-cl-ink: #5a4a42; /* тёплый коричневый текст */
+
+  /* ---- Цвета данго (Dango Daikazoku) ---- */
+  --color-dango-white: #faf3e0;
+  --color-dango-pink: #f7a8c4;
+  --color-dango-green: #a8d5ba;
+  --color-dango-yellow: #f6e27a;
+  --color-dango-brown: #c9a27e;
+
+  /* ---- Шрифты ---- */
+  --font-display: 'Comfortaa', system-ui, 'Segoe UI', sans-serif;
+  --font-body: 'Nunito', system-ui, 'Segoe UI', sans-serif;
+
+  /* ---- Радиусы и свечения ---- */
+  --radius-blob: 28px;
+  --shadow-glow: 0 0 24px rgba(125, 249, 255, 0.55);
+  --shadow-glow-strong: 0 0 48px rgba(125, 249, 255, 0.85);
+  --shadow-soft: 0 8px 30px rgba(0, 0, 0, 0.18);
+
+  /* ---- Кастомные анимации ---- */
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-spark: spark 1.2s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+@keyframes spark {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}

@@ -1,0 +1,59 @@
+@import 'tailwindcss';
+@import './styles/theme.css';
+
+/* Шрифты Comfortaa/Nunito подключены через <link> в index.html */
+
+:root {
+  color-scheme: dark;
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  background: var(--color-rg-deep);
+  color: var(--color-rg-white);
+  overflow-x: hidden;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  margin: 0;
+}
+
+/* Утилита-хелпер: текст со свечением */
+.text-glow {
+  text-shadow: 0 0 12px var(--color-rg-cyan), 0 0 28px rgba(125, 249, 255, 0.5);
+}
+
+/* Тонкая полоса-разделитель «электрическая дуга» */
+.divider-arc {
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--color-rg-cyan),
+    transparent
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
